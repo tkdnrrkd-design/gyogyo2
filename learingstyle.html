@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>학습·정보활용 스타일 진단</title>
+<style>
+body { font-family: "Noto Sans KR", sans-serif; background:#f4f6f8; padding:30px; }
+h1 { text-align:center; }
+.question { background:#fff; padding:15px; margin-bottom:10px; border-radius:8px; }
+.result { background:#fff; padding:20px; margin-top:20px; border-radius:8px; }
+label { margin-right:10px; }
+button { padding:12px; width:100%; font-size:16px; margin-top:20px; }
+</style>
+</head>
+
+<body>
+
+<h1>📘 학습·정보활용 스타일 검사</h1>
+
+<form id="survey">
+
+<script>
+const questions = [
+  "나는 조용한 곳에서 공부가 잘된다.",
+  "공부할 때 밝은 조명이 좋다.",
+  "너무 덥거나 추우면 공부가 잘 안된다.",
+  "공부할 때 해야 할 일이 정리되어 있으면 더 잘한다.",
+  "한 번 시작한 공부는 끝까지 하려고 노력한다.",
+  "누가 시키지 않아도 스스로 공부하려는 편이다.",
+  "나는 혼자 공부하는 것이 편하다.",
+  "친구 한 명과 둘이서 공부할 때 도움이 된다.",
+  "여러 명이 함께 공부하는 활동이 재미있다.",
+  "글로 읽기보다 그림·표·영상이 이해가 잘 된다.",
+  "설명을 말로 들으면 이해가 잘 된다.",
+  "직접 써보거나 만들어보면 기억이 오래 남는다.",
+  "조금 움직여야 집중이 된다.",
+  "전체 내용을 먼저 알고 나서 세부 내용을 배우는 것이 좋다.",
+  "차근차근 단계별 설명이 좋다.",
+  "바로 답보다 생각할 시간이 필요하다."
+];
+
+questions.forEach((q, i) => {
+  document.write(`<div class="question"><b>${i+1}. ${q}</b><br>`);
+  for(let s=1; s<=5; s++){
+    document.write(`
+      <label>
+        <input type="radio" name="q${i}" value="${s}">
+        ${s}
+      </label>
+    `);
+  }
+  document.write(`</div>`);
+});
+</script>
+
+<button type="button" onclick="analyze()">결과 보기</button>
+</form>
+
+<div class="result" id="result"></div>
+
+<script>
+function analyze() {
+  const areas = {
+    environment: [0,1,2],
+    emotion: [3,4,5],
+    social: [6,7,8],
+    physical: [9,10,11,12],
+    cognitive: [13,14,15]
+  };
+
+  const styles = {
+    environment: ["저소음 선호형", "밝은 조명 선호형", "물리적 환경 민감형"],
+    emotion: ["구조화 선호형", "과제 지속형", "자기주도형"],
+    social: ["개인학습 선호형", "짝 학습 선호형", "협동학습 선호형"],
+    physical: ["시각 선호", "청각 선호", "촉각·운동 선호"],
+    cognitive: ["종합적 사고", "분석적 사고", "반성적 사고"]
+  };
+
+  let resultHTML = "<h3>📊 결과 분석</h3>";
+
+  for (let area in areas) {
+    let scores = [];
+    areas[area].forEach(i => {
+      const checked = document.querySelector(`input[name="q${i}"]:checked`);
+      if (!checked) {
+        alert("모든 문항에 응답해 주세요.");
+        return;
+      }
+      scores.push(parseInt(checked.value));
+    });
+
+    const avg = (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(2);
+
+    let level = avg >= 4 ? "강한 선호" : avg >= 3 ? "보통 선호" : "낮은 선호";
+
+    let maxIndex = scores.indexOf(Math.max(...scores));
+    let style = styles[area][maxIndex] || styles[area][0];
+
+    resultHTML += `
+      <p>
+        <b>${area.toUpperCase()}</b><br>
+        평균 점수: ${avg} (${level})<br>
+        👉 추천 스타일: <b>${style}</b>
+      </p>
+    `;
+  }
+
+  resultHTML += `
+    <hr>
+    <b>📚 정보활용교육 활용 제안</b><br>
+    - 강한 선호 영역을 중심으로 정보 탐색·정리·표현 전략 설계<br>
+    - 자료 유형(텍스트·영상·활동형) 선택 근거로 활용<br>
+    - 모둠 구성 및 과제 제시 방식 차별화 가능
+  `;
+
+  document.getElementById("result").innerHTML = resultHTML;
+}
+</script>
+
+</body>
+</html>
+

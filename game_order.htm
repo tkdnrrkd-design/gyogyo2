@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>영어 단어 테트리스</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f0f8ff;
+        text-align: center;
+    }
+
+    canvas {
+        background: #fff;
+        border: 3px solid #333;
+        margin-top: 10px;
+    }
+
+    #info {
+        font-size: 20px;
+        margin-top: 10px;
+    }
+
+    #score {
+        font-size: 18px;
+        margin-top: 5px;
+    }
+</style>
+</head>
+<body>
+
+<h1>🧱 영어 단어 테트리스</h1>
+<p>뜻에 맞는 영어 단어 블록을 떨어뜨리세요!</p>
+
+<div id="info"></div>
+<canvas id="game" width="300" height="500"></canvas>
+<div id="score">점수: 0</div>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const COLS = 6;
+const ROWS = 10;
+const SIZE = 50;
+
+const words = [
+    { en: "apple", ko: "사과" },
+    { en: "dog", ko: "강아지" },
+    { en: "car", ko: "자동차" },
+    { en: "sun", ko: "해" },
+    { en: "book", ko: "책" }
+];
+
+let score = 0;
+let board = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+let current = null;
+let currentWord = null;
+
+// 새 문제
+function newQuestion() {
+    currentWord = words[Math.floor(Math.random() * words.length)];
+    document.getElementById("info").textContent =
+        `👉 뜻: ${currentWord.ko}`;
+}
+
+// 새 블록
+function newBlock() {
+    const word = words[Math.floor(Math.random() * words.length)];
+    current = {
+        x: Math.floor(COLS / 2),
+        y: 0,
+        word: word.en
+    };
+}
+
+// 그리기
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 보드
+    for (let y = 0; y < ROWS; y++) {
+        for (let x = 0; x < COLS; x++) {
+            if (board[y][x]) drawBlock(x, y, board[y][x]);
+        }
+    }
+
+    // 현재 블록
+    if (current) drawBlock(current.x, current.y, current.word);
+}
+
+function drawBlock(x, y, text) {
+    ctx.fillStyle = "#d0ebff";
+    ctx.fillRect(x * SIZE, y * SIZE, SIZE, SIZE);
+    ctx.strokeRect(x * SIZE, y * SIZE, SIZE, SIZE);
+
+    ctx.fillStyle = "#000";
+    ctx.font = "14px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText(text, x * SIZE + SIZE / 2, y * SIZE + SIZE / 2 + 5);
+}
+
+// 충돌
+function collide(x, y) {
+    if (y >= ROWS || x < 0 || x >= COLS) return true;
+    if (board[y][x]) return true;
+    return false;
+}
+
+// 고정
+function freeze() {
+    board[current.y][current.x] = current.word;
+
+    // 정답 체크
+    if (current.word === currentWord.en) {
+        score += 10;
+        newQuestion();
+    } else {
+        score -= 5;
+    }
+
+    document.getElementById("score").textContent = `점수: ${score}`;
+    newBlock();
+}
+
+// 떨어뜨리기
+function drop() {
+    if (!collide(current.x, current.y + 1)) {
+        current.y++;
+    } else {
+        freeze();
+    }
+}
+
+// 키보드
+document.addEventListener("keydown", e => {
+    if (!current) return;
+
+    if (e.key === "ArrowLeft" && !collide(current.x - 1, current.y)) {
+        current.x--;
+    }
+    if (e.key === "ArrowRight" && !collide(current.x + 1, current.y)) {
+        current.x++;
+    }
+    if (e.key === "ArrowDown") {
+        drop();
+    }
+});
+
+// 게임 루프
+function loop() {
+    drop();
+    draw();
+}
+
+newQuestion();
+newBlock();
+setInterval(loop, 800);
+</script>
+
+</body>
+</html>

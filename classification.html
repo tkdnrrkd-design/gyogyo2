@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>KDC 분류번호 찾기</title>
+  <style>
+    body {
+      font-family: "Noto Sans KR", sans-serif;
+      background: #f4f6f8;
+      padding: 30px;
+    }
+    h1 {
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 12px;
+      width: 100%;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      background: white;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>📚 KDC 분류번호 찾기 (류·강)</h1>
+
+<p>주제를 입력하세요 (예: 동물, 한국 역사, 과학 실험)</p>
+
+<input type="text" id="topicInput" placeholder="주제 입력">
+<button onclick="findKDC()">분류번호 찾기</button>
+
+<div id="result"></div>
+
+<script>
+  // KDC 류·강 수준 단순 매핑 데이터
+  const kdcData = [
+    { keywords: ["철학", "윤리"], code: "100", name: "철학" },
+    { keywords: ["종교", "기독교", "불교"], code: "200", name: "종교" },
+    { keywords: ["사회", "정치", "경제", "법"], code: "300", name: "사회과학" },
+    { keywords: ["언어", "국어", "영어"], code: "700", name: "언어" },
+    { keywords: ["과학", "실험", "물리", "화학", "생물"], code: "400", name: "자연과학" },
+    { keywords: ["수학"], code: "410", name: "수학" },
+    { keywords: ["동물", "식물", "생태"], code: "490", name: "생명과학" },
+    { keywords: ["기술", "컴퓨터", "인공지능"], code: "560", name: "공학" },
+    { keywords: ["예술", "미술", "음악"], code: "600", name: "예술" },
+    { keywords: ["문학", "소설", "시"], code: "800", name: "문학" },
+    { keywords: ["한국사", "역사", "세계사"], code: "900", name: "역사" }
+  ];
+
+  function findKDC() {
+    const input = document.getElementById("topicInput").value.trim();
+    const resultDiv = document.getElementById("result");
+
+    if (!input) {
+      resultDiv.innerHTML = "❗ 주제를 입력하세요.";
+      return;
+    }
+
+    const found = kdcData.find(item =>
+      item.keywords.some(keyword => input.includes(keyword))
+    );
+
+    if (found) {
+      resultDiv.innerHTML = `
+        <strong>📌 추천 KDC 분류번호</strong><br>
+        분류번호: <b>${found.code}</b><br>
+        분류명: ${found.name}
+      `;
+    } else {
+      resultDiv.innerHTML = "⚠️ 해당 주제에 맞는 분류를 찾지 못했습니다.";
+    }
+  }
+</script>
+
+</body>
+</html>

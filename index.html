@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Library Pokedex</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="pokedex">
+        <!-- Left Panel: Main Screen & Controls -->
+        <div class="left-panel">
+            <div class="top-lights">
+                <div class="big-blue-light"></div>
+                <div class="small-lights">
+                    <div class="light red-light"></div>
+                    <div class="light yellow-light"></div>
+                    <div class="light green-light"></div>
+                </div>
+            </div>
+
+            <div class="screen-container">
+                <div class="main-screen">
+                    <!-- Menu 1: Boolean Search -->
+                    <div id="menu1" class="content-section active">
+                        <h3 style="color:var(--ui-yellow); border-bottom:1px solid #555; padding-bottom:5px;">BOOLEAN
+                            SEARCH</h3>
+                        <div class="search-ui" style="margin-top:10px;">
+                            <div class="search-row">
+                                <input type="text" id="term1" class="search-input" placeholder="Keyword 1 (e.g., Data)">
+                            </div>
+                            <div class="search-row">
+                                <select id="operator" class="search-select">
+                                    <option value="AND">AND</option>
+                                    <option value="OR">OR</option>
+                                    <option value="NOT">NOT</option>
+                                </select>
+                            </div>
+                            <div class="search-row">
+                                <input type="text" id="term2" class="search-input"
+                                    placeholder="Keyword 2 (e.g., Literacy)">
+                            </div>
+                            <button onclick="runBooleanSearch()" class="search-btn">SCAN DATABASE</button>
+                        </div>
+                        <div id="resultArea" style="margin-top:15px;">
+                            <!-- Results go here -->
+                        </div>
+                    </div>
+
+                    <!-- Menu 2: Classification -->
+                    <div id="menu2" class="content-section">
+                        <h3 style="color:var(--ui-yellow);">CLASSIFICATION</h3>
+                        <p style="font-size:0.8em; margin-bottom:10px;">Select Type:</p>
+                        <div id="typeGrid" class="type-grid">
+                            <!-- JS Injected -->
+                        </div>
+                    </div>
+
+                    <!-- Menu 3: Battle/Best (Baesu) -->
+                    <div id="menu3" class="content-section">
+                        <h3 style="color:var(--ui-yellow);">BOOK ARENA</h3>
+                        <p style="font-size:0.8em; margin-bottom:10px;">Weekly Top Rankings:</p>
+                        <div id="battleList" class="battle-arena">
+                            <!-- JS Injected -->
+                        </div>
+                    </div>
+
+                    <!-- Menu 4: Trainer Card (Surprise) -->
+                    <div id="menu4" class="content-section">
+                        <div class="trainer-card">
+                            <div class="trainer-header">
+                                <div class="avatar">
+                                    <!-- Simple CSS Avatar -->
+                                    <div
+                                        style="width:100%; height:100%; background:wheat; border-radius:50%; border:2px solid #555; position:relative; overflow:hidden;">
+                                        <div style="width:100%; height:30%; background:#d00; position:absolute; top:0;">
+                                        </div>
+                                        <div
+                                            style="width:100%; height:10%; background:#333; position:absolute; top:30%;">
+                                        </div>
+                                        <div
+                                            style="width:30%; height:30%; background:#eee; border-radius:50%; position:absolute; top:15%; left:35%; border:2px solid #333;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="font-weight:bold; font-size:1.2em;">STUDENT TRAINER</div>
+                                    <div style="font-size:0.8em; opacity:0.8;">ID: 2024-001</div>
+                                </div>
+                            </div>
+                            <div style="font-size:0.9em; margin-top:10px;">
+                                <div>BADGES (Levels): 4</div>
+                                <div>POKEDEX (Books Read): 12</div>
+                                <div>CURRENT PARTY (Borrowed):</div>
+                                <ul style="margin-left:20px; margin-top:5px; font-size:0.9em;">
+                                    <li>Harry Potter</li>
+                                    <li>Data Science</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn active" onclick="showMenu('menu1')">SEARCH</button>
+                    <button class="nav-btn" onclick="showMenu('menu2')">TYPE</button>
+                    <button class="nav-btn" onclick="showMenu('menu3')">ARENA</button>
+                    <button class="nav-btn" onclick="showMenu('menu4')">CARD</button>
+                </div>
+            </div>
+
+            <div class="controls-row">
+                <div class="d-pad">
+                    <div class="up-down"></div>
+                    <div class="left-right"></div>
+                </div>
+                <div class="action-buttons">
+                    <div class="round-btn btn-b" onclick="alert('Back')"></div>
+                    <div class="round-btn btn-a" onclick="alert('Select')"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Info Screen -->
+        <div class="right-panel">
+            <div class="cover-details">
+                <div id="right-screen-content" style="white-space: pre-wrap; font-size:0.9em;">
+                    SYSTEM READY.
+                    SELECT A MENU OPTION.
+                </div>
+            </div>
+            <div style="display:grid; grid-template-columns: repeat(5, 1fr); gap:2px; margin-top:20px; width:90%;">
+                <!-- Keypad decoration -->
+                <div style="background:#5daae0; height:30px; border:1px solid #3388cc;"></div>
+                <div style="background:#5daae0; height:30px; border:1px solid #3388cc;"></div>
+                <div style="background:#5daae0; height:30px; border:1px solid #3388cc;"></div>
+                <div style="background:#5daae0; height:30px; border:1px solid #3388cc;"></div>
+                <div style="background:#5daae0; height:30px; border:1px solid #3388cc;"></div>
+                <div style="background:#5daae0; height:30px; border:1px solid #3388cc;"></div>
+                <div style="background:#5daae0; height:30px; border:1px solid #3388cc;"></div>
+                <div style="background:#5daae0; height:30px; border:1px solid #3388cc;"></div>
+                <div style="background:#5daae0; height:30px; border:1px solid #3388cc;"></div>
+                <div style="background:#5daae0; height:30px; border:1px solid #3388cc;"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; width:90%; margin-top:20px;">
+                <div
+                    style="background:#333; width:45%; height:40px; border:1px solid #000; box-shadow:inset 0 0 5px #000;">
+                </div>
+                <div
+                    style="background:#333; width:45%; height:40px; border:1px solid #000; box-shadow:inset 0 0 5px #000;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

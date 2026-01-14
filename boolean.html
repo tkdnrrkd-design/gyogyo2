@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>불리언 검색 엔진 연습</title>
+    <style>
+        body { font-family: 'Malgun Gothic', sans-serif; background-color: #f8f9fa; padding: 20px; }
+        .container { max-width: 700px; margin: 0 auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
+        h2 { color: #2c3e50; text-align: center; }
+        .search-controls { background: #e9ecef; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .input-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+        input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        select { padding: 10px; border-radius: 5px; font-weight: bold; background: #fff; }
+        button { width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #0056b3; }
+        
+        .result-stats { margin: 15px 0; font-size: 0.9em; color: #666; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        .book-item { padding: 12px; border-bottom: 1px solid #eee; }
+        .book-title { font-weight: bold; color: #333; }
+        .book-tags { font-size: 0.85em; color: #007bff; margin-top: 4px; }
+        mark { background-color: #ffeb3b; padding: 0 2px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🔎 불리언 검색 엔진 (AND, OR, NOT)</h2>
+    
+    <div class="search-controls">
+        <div class="input-row">
+            <input type="text" id="term1" placeholder="첫 번째 키워드 (예: 데이터)">
+            <select id="operator">
+                <option value="AND">AND</option>
+                <option value="OR">OR</option>
+                <option value="NOT">NOT</option>
+            </select>
+            <input type="text" id="term2" placeholder="두 번째 키워드 (예: 리터러시)">
+        </div>
+        <button onclick="runBooleanSearch()">검색 실행</button>
+    </div>
+
+    <div id="resultArea">
+        <div id="stats" class="result-stats">검색 버튼을 눌러주세요.</div>
+        <div id="list"></div>
+    </div>
+</div>
+
+<script>
+    // 1. 샘플 도서 데이터 (태그 기반 검색)
+    const libraryData = [
+        { title: "데이터 리터러시 가이드", tags: ["데이터", "리터러시", "교육"] },
+        { title: "정보 리터러시의 이해", tags: ["정보", "리터러시", "문헌정보"] },
+        { title: "데이터 시각화 교과서", tags: ["데이터", "시각화", "디자인"] },
+        { title: "미디어 리터러시와 가짜뉴스", tags: ["미디어", "리터러시", "정보"] },
+        { title: "파이썬 데이터 분석", tags: ["데이터", "파이썬", "프로그래밍"] },
+        { title: "도서관 정보학 개론", tags: ["도서관", "정보", "문헌정보"] },
+        { title: "디지털 리터러시 교육론", tags: ["디지털", "리터러시", "교육"] },
+        { title: "빅데이터의 세계", tags: ["데이터", "빅데이터", "과학"] }
+    ];
+
+    function runBooleanSearch() {
+        const t1 = document.getElementById('term1').value.trim().toLowerCase();
+        const t2 = document.getElementById('term2').value.trim().toLowerCase();
+        const op = document.getElementById('operator').value;
+        const listDiv = document.getElementById('list');
+        const statsDiv = document.getElementById('stats');
+
+        if (!t1) { alert("첫 번째 키워드는 필수입니다."); return; }
+
+        // 2. 불리언 논리 필터링
+        const results = libraryData.filter(book => {
+            const content = book.tags.join(" ").toLowerCase() + book.title.toLowerCase();
+            const hasT1 = content.includes(t1);
+            const hasT2 = t2 ? content.includes(t2) : false;
+
+            if (op === "AND") return hasT1 && hasT2;
+            if (op === "OR")  return hasT1 || hasT2;
+            if (op === "NOT") return hasT1 && !hasT2;
+            return hasT1;
+        });
+
+        // 3. 결과 출력
+        listDiv.innerHTML = "";
+        statsDiv.innerHTML = `검색 조건: <b>${t1} ${op} ${t2}</b> | 검색 결과: ${results.length}건`;
+
+        if (results.length === 0) {
+            listDiv.innerHTML = "<p style='text-align:center; padding:20px;'>일치하는 도서가 없습니다.</p>";
+            return;
+        }
+
+        results.forEach(book => {
+            const item = document.createElement('div');
+            item.className = 'book-item';
+            
+            // 키워드 강조 하이라이트
+            let displayTitle = book.title;
+            [t1, t2].forEach(t => {
+                if(t) {
+                    const reg = new RegExp(t, "gi");
+                    displayTitle = displayTitle.replace(reg, match => `<mark>${match}</mark>`);
+                }
+            });
+
+            item.innerHTML = `
+                <div class="book-title">${displayTitle}</div>
+                <div class="book-tags">태그: ${book.tags.join(", ")}</div>
+            `;
+            listDiv.appendChild(item);
+        });
+    }
+</script>
+
+</body>
+</html>
